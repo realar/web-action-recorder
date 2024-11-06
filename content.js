@@ -12,30 +12,28 @@ function describeEvent(event) {
     return description;
 }
 
+// Функция для проверки, включена ли запись
+function isRecording(callback) {
+    chrome.storage.local.get({isRecording: false}, (data) => {
+        callback(data.isRecording);
+    });
+}
+
 // Обработчик кликов
 document.addEventListener('click', (event) => {
-    const description = describeEvent(event);
+    isRecording((recording) => {
+        if (!recording) return;
 
-    // Отправляем сообщение в фоновый скрипт для создания скриншота
-    chrome.runtime.sendMessage({
-        type: "record_click_request",
-        description: description
-    }, (response) => {
-        if (response.status !== "success") {
-            console.error("Ошибка при сохранении клика.");
-        }
-    });
-}, true);
+        const description = describeEvent(event);
 
-// Функция для создания скриншота видимой части страницы
-async function captureScreenshot() {
-    return new Promise((resolve, reject) => {
-        chrome.tabs.captureVisibleTab(null, {format: "png"}, (dataUrl) => {
-            if (chrome.runtime.lastError) {
-                reject(chrome.runtime.lastError);
-            } else {
-                resolve(dataUrl);
+        // Отправляем сообщение в фоновый скрипт для создания скриншота
+        chrome.runtime.sendMessage({
+            type: "record_click_request",
+            description: description
+        }, (response) => {
+            if (response.status !== "success") {
+                console.error("Ошибка при сохранении клика.");
             }
         });
     });
-}
+}, true);
