@@ -1,0 +1,29 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    width: 300px;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 18px;
+    text-align: center;
+}
+
+#controls {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#status {
+    margin-top: 10px;
+    font-size: 12px;
+    color: green;
+}
