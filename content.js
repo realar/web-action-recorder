@@ -13,25 +13,18 @@ function describeEvent(event) {
 }
 
 // Обработчик кликов
-document.addEventListener('click', async (event) => {
-    // Создаем скриншот видимой части страницы
-    try {
-        const screenshot = await captureScreenshot();
-        const description = describeEvent(event);
+document.addEventListener('click', (event) => {
+    const description = describeEvent(event);
 
-        // Отправляем данные в фоновый скрипт
-        chrome.runtime.sendMessage({
-            type: "record_click",
-            description: description,
-            screenshot: screenshot
-        }, (response) => {
-            if (response.status !== "success") {
-                console.error("Ошибка при сохранении клика.");
-            }
-        });
-    } catch (error) {
-        console.error("Ошибка при создании скриншота:", error);
-    }
+    // Отправляем сообщение в фоновый скрипт для создания скриншота
+    chrome.runtime.sendMessage({
+        type: "record_click_request",
+        description: description
+    }, (response) => {
+        if (response.status !== "success") {
+            console.error("Ошибка при сохранении клика.");
+        }
+    });
 }, true);
 
 // Функция для создания скриншота видимой части страницы
